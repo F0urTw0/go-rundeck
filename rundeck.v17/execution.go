@@ -6,20 +6,20 @@ import (
 )
 
 type Execution struct {
-	XMLName                 xml.Name            `xml:"execution"`
-	ID                      int                 `xml:"id,attr"                  json:"id"`
-	HRef                    string              `xml:"href,attr"                json:"href"`
-	Permalink               string              `xml:"permalink"                json:"permalink"`
-	Status                  string              `xml:"status,attr"              json:"status"`
-	Project                 string              `xml:"project,attr"             json:"project"`
-	User                    string              `xml:"user"                     json:"user"`
-	Description             string              `xml:"description,omitempty"    json:"description"`
-	ArgString               string              `xml:"argstring,omitempty"      json:"argstring"`
-	DateStarted             *ExecutionDateTime  `xml:"date-started"             json:"date-started"`
-	DateEnded               *ExecutionDateTime  `xml:"date-ended"               json:"date-ended"`
-	Job                     *Job                `xml:"job"                      json:"job"`
-	SuccessfulNodes         Nodes               `xml:"successfulNodes,omitempty"`
-	FailedNodes             Nodes               `xml:"failedNodes,omitempty"`
+	XMLName                 xml.Name            `xml:"execution"                    json:"-"`
+	ID                      int                 `xml:"id,attr"                      json:"id"`
+	HRef                    string              `xml:"href,attr"                    json:"href"`
+	Permalink               string              `xml:"permalink"                    json:"permalink"`
+	Status                  string              `xml:"status,attr"                  json:"status"`
+	Project                 string              `xml:"project,attr"                 json:"project"`
+	User                    string              `xml:"user"                         json:"user"`
+	Description             string              `xml:"description,omitempty"        json:"description"`
+	ArgString               string              `xml:"argstring,omitempty"          json:"argstring"`
+	DateStarted             *ExecutionDateTime  `xml:"date-started"                 json:"date-started"`
+	DateEnded               *ExecutionDateTime  `xml:"date-ended"                   json:"date-ended"`
+	Job                     *Job                `xml:"job"                          json:"job"`
+	SuccessfulNodes         Nodes               `xml:"successfulNodes,omitempty"    json:"successfulNodes"`
+	FailedNodes             Nodes               `xml:"failedNodes,omitempty"        json:"failedNodes"`
 }
 
 type ExecutionDateTime struct {

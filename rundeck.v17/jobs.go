@@ -261,27 +261,6 @@ type RunOptions struct {
 //	return q
 //}
 
-//type JobList struct {
-//	XMLName xml.Name   `xml:"joblist"`
-//	Job     JobDetails `xml:"job"`
-//}
-
-//type JobDetails struct {
-//	ID                string          `xml:"id"`
-//	Name              string          `xml:"name"`
-//	LogLevel          string          `xml:"loglevel"`
-//	Description       string          `xml:"description,omitempty"`
-//	UUID              string          `xml:"uuid"`
-//	Group             string          `xml:"group"`
-//	Context           JobContext      `xml:"context"`
-//	Notification      JobNotification `xml:"notification"`
-//	MultipleExections bool            `xml:"multipleExecutions"`
-//	Dispatch          JobDispatch     `xml:"dispatch"`
-//	NodeFilters       struct {
-//		Filter []string `xml:"filter"`
-//	} `xml:"nodefilters"`
-//	Sequence JobSequence `xml:"sequence"`
-//}
 
 type JobSequence struct {
 	XMLName   xml.Name

@@ -9,16 +9,6 @@ import (
 	"net/url"
 )
 
-//type Execution struct {
-//	ID                  int             `json:"id"`
-//	Href                string          `json:"href"`
-//	Permalink           string          `json:"permalink"`
-//	Status              string          `json:"status"`
-//	Project             string          `json:"project"`
-//	User                string          `json:"user"`
-//}
-
-
 type Executions struct {
 	Count               int64           `xml:"count,attr"`
 	Total               int64           `xml:"total,attr"`

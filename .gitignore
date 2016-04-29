@@ -1,7 +1,17 @@
-.env.local
-xmlfiles/
-bin/
-pkg/
-src/github.com
-src/gopkg.in
-src/golang.org
+### Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+### Folders
+_obj
+_test
+
+### Binaries
+*.exe
+*.test
+*.prof
+
+### Project
+.idea
+go-rundeck.iml

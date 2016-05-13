@@ -2,10 +2,15 @@ package rundeck
 
 import "encoding/xml"
 
+type RundeckResult struct {
+	XMLName         xml.Name        `xml:"result"           json:"-"`
+	HasError        bool            `xml:"error,attr"       json:"error"`
+	ApiVersion      int             `xml:"apiversion,attr"  json:"apiversion"`
+	Error           RundeckError    `xml:"error"            json:"-"`
+}
+
 type RundeckError struct {
-	XMLName         xml.Name    `xml:"result"           json:"-"`
-	Error           bool        `xml:"error,attr"       json:"error"`
-	ErrorCode       string      `xml:"errorCode,attr"   json:"errorCode"`
-	ApiVersion      int         `xml:"apiversion,attr"  json:"apiversion"`
-	Message         string      `xml:"error>message"    json:"message"`
+	XMLName         xml.Name        `xml:"error"            json:"-"`
+	Code            string          `xml:"code,attr"        json:"errorCode"`
+	Message         string          `xml:"message"          json:"message"`
 }

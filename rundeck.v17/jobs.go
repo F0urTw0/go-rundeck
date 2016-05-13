@@ -1,13 +1,15 @@
 package rundeck
 
 import (
-	"encoding/xml"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
-	"net/url"
 	"fmt"
 	"io"
+	"net/url"
 )
+
+var JobNotFound = errors.New("Job not found")
 
 type JobList struct {
 	XMLName             xml.Name        `xml:"joblist"`
@@ -377,12 +379,29 @@ type ImportParams struct {
 	Project  string
 }
 
-func (c *RundeckClient) GetJob(id string) (list JobList, err error) {
+func (c *RundeckClient) GetJob(id string) (job Job, err error) {
 
-	var response []byte
+	// init vars
+	var (
+		list JobList
+		response []byte
+	)
 
-	if err = c.Get(&response, "job/"+id, url.Values{}); err == nil {
-		err = xml.Unmarshal(response, &list)
+	// set query string
+	params := url.Values{}
+	params.Add("format","xml")
+
+	// call api
+	if err = c.Get(&response, "job/"+id, params); err == nil {
+		if err = xml.Unmarshal(response, &list); err != nil {
+			err = json.Unmarshal(response, &list)
+		}
+	}
+
+	if len(list.Job) == 1 {
+		job = list.Job[0]
+	} else {
+		err = JobNotFound
 	}
 
 	return
@@ -460,35 +479,24 @@ func (c *RundeckClient) RunJob(id string, options RunOptions) (execution Executi
 
 }
 
-func (c *RundeckClient) FindJobByName(name string, project string) (job *Job, err error) {
+func (c *RundeckClient) FindJobByName(name string, project string) (job Job, err error) {
 
-	var (
-		jobs Jobs
-		list JobList
-	)
+	var jobs Jobs
 
 	// get all jobs
 	if jobs, err = c.ListJobs(project); err == nil {
-
 		if len(jobs.Jobs) > 0 {
-
 			for _, d := range jobs.Jobs {
-
 				if d.Name == name {
-
-					if list, err = c.GetJob(d.UUID); err == nil {
-						job = &list.Job[0]
-					}
-
+					job, err = c.GetJob(d.UUID)
 				}
-
 			}
-
-		} else {
-
-			err = errors.New("Job not found")
-
 		}
+	}
+
+	// job not found!
+	if job.UUID == "" {
+		err = JobNotFound
 
 	}
 

@@ -6,11 +6,10 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"gopkg.in/jmcvetta/napping.v2"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"github.com/davecgh/go-spew/spew"
+	"gopkg.in/jmcvetta/napping.v2"
 )
 
 func (rc *RundeckClient) Get(i *[]byte, path string, params url.Values) error {
@@ -41,6 +40,7 @@ func (client *RundeckClient) makeRequest(i *[]byte, payload []byte, method strin
 
 	jar, _ := cookiejar.New(nil)
 	client.Client.Client.Jar = jar
+
 	if client.Config.AuthMethod == "basic" {
 		authQs := url.Values{}
 		authQs.Add("j_username", client.Config.Username)
@@ -75,31 +75,27 @@ func (client *RundeckClient) makeRequest(i *[]byte, payload []byte, method strin
 		CaptureResponseBody: true,
 	}
 
-	r, err := client.Client.Send(&req)
+	response, err := client.Client.Send(&req)
+
 	if err != nil {
 		return err
 	} else {
-		if r.Status() == 404 {
-			errormsg := fmt.Sprintf("No such item (%s)", r.Status)
+		if response.Status() == 404 {
+			errormsg := fmt.Sprintf("No such item (%s)", response.Status)
 			return errors.New(errormsg)
 		}
-		if r.Status() == 204 {
+		if response.Status() == 204 {
 			return nil
 		}
-		if (r.Status() < 200) || (r.Status() > 299) {
-			var data RundeckError
-
-
-
-			xml.Unmarshal([]byte(r.RawText()), &data)
-			err = json.Unmarshal([]byte(r.RawText()), &data)
-
-			spew.Dump(err, r.RawText(), data)
-
-			errormsg := fmt.Sprintf("non-2xx response (code: %d): %s", r.Status(), data.Message)
+		if (response.Status() < 200) || (response.Status() > 299) {
+			var data RundeckResult
+			if err = xml.Unmarshal([]byte(response.RawText()), &data); err != nil {
+				err = json.Unmarshal([]byte(response.RawText()), &data)
+			}
+			errormsg := fmt.Sprintf("non-2xx response (code: %d): %s", response.Status(), data.Error.Message)
 			return errors.New(errormsg)
 		} else {
-			b := r.ResponseBody.Bytes()
+			b := response.ResponseBody.Bytes()
 			*i = append(*i, b...)
 			return nil
 		}

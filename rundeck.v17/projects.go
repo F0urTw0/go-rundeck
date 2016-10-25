@@ -2,6 +2,7 @@ package rundeck
 
 import (
 	"encoding/xml"
+	"net/url"
 )
 
 type Project struct {
@@ -30,7 +31,9 @@ type ConfigProperty struct {
 
 func (c *RundeckClient) ListProjects() (data Projects, err error) {
 	var res []byte
-	err = c.Get(&res, "projects", nil)
+	params := url.Values{}
+	params.Add("format","xml")
+	err = c.Get(&res, "projects", params)
 	if err != nil {
 		return data, err
 	} else {
